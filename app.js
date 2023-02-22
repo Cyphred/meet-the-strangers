@@ -14,8 +14,20 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });
 
+let connectedPeers = [];
+
 socketio.on("connection", (socket) => {
-  console.log("User connected to socket", socket.id);
+  connectedPeers.push(socket.id);
+  console.log(connectedPeers);
+
+  socket.on("disconnect", () => {
+    const newConnectedPeers = connectedPeers.filter((peerSocketId) => {
+      peerSocketId !== socket.io;
+    });
+
+    connectedPeers = newConnectedPeers;
+    console.log(connectedPeers);
+  });
 });
 
 server.listen(PORT, () => {
