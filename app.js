@@ -1,0 +1,23 @@
+const express = require("express");
+const http = require("http");
+const { isObject } = require("util");
+
+const PORT = process.env.PORT || 3000;
+
+const app = express();
+const server = http.createServer(app);
+const socketio = require("socket.io")(server);
+
+app.use(express.static("public"));
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html");
+});
+
+socketio.on("connection", (socket) => {
+  console.log("User connected to socket", socket.id);
+});
+
+server.listen(PORT, () => {
+  console.log("Listening on port", PORT);
+});
