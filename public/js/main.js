@@ -1,5 +1,6 @@
 import * as store from "./store.js";
 import * as ui from "./ui.js";
+import * as webRTCHandler from "./webRTCHandler.js";
 
 export const registerSocketEvents = (socket) => {
   socket.on("connect", () => {
