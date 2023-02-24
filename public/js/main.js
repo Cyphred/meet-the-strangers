@@ -1,13 +1,19 @@
 import * as store from "./store.js";
 import * as ui from "./ui.js";
-import * as webRTCHandler from "./webRTCHandler.js";
+import * as constants from "./constants.js";
 
-export const registerSocketEvents = (socket) => {
+const registerSocketEvents = (socket) => {
   socket.on("connect", () => {
     console.log("Successfully connected to WS server via", socket.id);
     store.setSocketId(socket.id);
     ui.updatePersonalCode(socket.id);
   });
+};
+
+const sendPreOffer = (callType, callerCode, receiverCode) => {
+  console.log("Caller:", callerCode);
+  console.log("Receiver:", receiverCode);
+  console.log("Call Type:", callType);
 };
 
 // Initializtion of socketIO connection
@@ -36,14 +42,16 @@ const personalCodeVideoButton = document.getElementById(
 const personalCodeInput = document.getElementById("personal_code_input");
 
 personalCodeChatButton.addEventListener("click", () => {
-  webRTCHandler.sendPreOffer(
+  sendPreOffer(
+    constants.callType.CHAT_PERSONAL_CODE,
     store.getState().socketId,
     personalCodeInput.value
   );
 });
 
 personalCodeVideoButton.addEventListener("click", () => {
-  webRTCHandler.sendPreOffer(
+  sendPreOffer(
+    constants.callType.VIDEO_PERSONAL_CODE,
     store.getState().socketId,
     personalCodeInput.value
   );
