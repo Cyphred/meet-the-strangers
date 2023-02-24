@@ -22,3 +22,20 @@ personalCodeCopyButton.addEventListener("click", () => {
   navigator.clipboard && navigator.clipboard.writeText(personalCode);
   alert("Your perosnal code has been copied to the clipboard!");
 });
+
+// Registers event listeners for connection buttons
+const personalCodeChatButton = document.getElementById(
+  "personal_code_chat_button"
+);
+
+personalCodeChatButton.addEventListener("click", () => {
+  console.log("Chat button clicked");
+});
+
+const personalCodeVideoButton = document.getElementById(
+  "personal_code_video_button"
+);
+
+personalCodeVideoButton.addEventListener("click", () => {
+  console.log("Video button clicked");
+});
