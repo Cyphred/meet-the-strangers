@@ -22,7 +22,7 @@ socketio.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     const newConnectedPeers = connectedPeers.filter((peerSocketId) => {
-      peerSocketId !== socket.io;
+      return peerSocketId !== socket.id;
     });
 
     connectedPeers = newConnectedPeers;
