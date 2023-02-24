@@ -29,14 +29,22 @@ const personalCodeChatButton = document.getElementById(
   "personal_code_chat_button"
 );
 
-personalCodeChatButton.addEventListener("click", () => {
-  console.log("Chat button clicked");
-});
-
 const personalCodeVideoButton = document.getElementById(
   "personal_code_video_button"
 );
 
+const personalCodeInput = document.getElementById("personal_code_input");
+
+personalCodeChatButton.addEventListener("click", () => {
+  webRTCHandler.sendPreOffer(
+    store.getState().socketId,
+    personalCodeInput.value
+  );
+});
+
 personalCodeVideoButton.addEventListener("click", () => {
-  console.log("Video button clicked");
+  webRTCHandler.sendPreOffer(
+    store.getState().socketId,
+    personalCodeInput.value
+  );
 });
