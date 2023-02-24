@@ -28,19 +28,15 @@ const personalCodeVideoButton = document.getElementById(
 const personalCodeInput = document.getElementById("personal_code_input");
 
 personalCodeChatButton.addEventListener("click", () => {
-  sendPreOffer(
   wss.sendPreOffer(
     constants.callType.CHAT_PERSONAL_CODE,
-    store.getState().socketId,
     personalCodeInput.value
   );
 });
 
 personalCodeVideoButton.addEventListener("click", () => {
-  sendPreOffer(
   wss.sendPreOffer(
     constants.callType.VIDEO_PERSONAL_CODE,
-    store.getState().socketId,
     personalCodeInput.value
   );
 });
