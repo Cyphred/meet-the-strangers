@@ -1,24 +1,11 @@
 import * as store from "./store.js";
 import * as ui from "./ui.js";
 import * as constants from "./constants.js";
-
-const registerSocketEvents = (socket) => {
-  socket.on("connect", () => {
-    console.log("Successfully connected to WS server via", socket.id);
-    store.setSocketId(socket.id);
-    ui.updatePersonalCode(socket.id);
-  });
-};
-
-const sendPreOffer = (callType, callerCode, receiverCode) => {
-  console.log("Caller:", callerCode);
-  console.log("Receiver:", receiverCode);
-  console.log("Call Type:", callType);
-};
+import * as wss from "./wss.js";
 
 // Initializtion of socketIO connection
 const socket = io("/");
-registerSocketEvents(socket);
+wss.registerSocketEvents(socket);
 
 // Registers event for personal code copy button
 const personalCodeCopyButton = document.getElementById(
@@ -43,6 +30,7 @@ const personalCodeInput = document.getElementById("personal_code_input");
 
 personalCodeChatButton.addEventListener("click", () => {
   sendPreOffer(
+  wss.sendPreOffer(
     constants.callType.CHAT_PERSONAL_CODE,
     store.getState().socketId,
     personalCodeInput.value
@@ -51,6 +39,7 @@ personalCodeChatButton.addEventListener("click", () => {
 
 personalCodeVideoButton.addEventListener("click", () => {
   sendPreOffer(
+  wss.sendPreOffer(
     constants.callType.VIDEO_PERSONAL_CODE,
     store.getState().socketId,
     personalCodeInput.value
