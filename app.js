@@ -20,6 +20,21 @@ socketio.on("connection", (socket) => {
   connectedPeers.push(socket.id);
   console.log(connectedPeers);
 
+  socket.on("pre-offer", (data) => {
+    const connectedPeer = connectedPeers.find((peerSocketId) => {
+      return peerSocketId === data.receiverCode;
+    });
+
+    if (connectedPeer) {
+      const emitData = {
+        callerSocketId: socket.id,
+        callType: data.callType,
+      };
+
+      socketio.to(data.receiverCode).emit("pre-offer", emitData);
+    }
+  });
+
   socket.on("disconnect", () => {
     const newConnectedPeers = connectedPeers.filter((peerSocketId) => {
       return peerSocketId !== socket.id;
