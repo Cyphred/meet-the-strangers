@@ -32,6 +32,14 @@ socketio.on("connection", (socket) => {
       };
 
       socketio.to(data.receiverCode).emit("pre-offer", emitData);
+    } else {
+      const data = {
+        // FIXME Rather janky implementation of not using constants for
+        // this. Might result in this getting forgotten about when the
+        // values for the constants gets changed in the future.
+        preOfferAnswer: "RECEIVER_NOT_FOUND",
+      };
+      socketio.to(socket.id).emit("pre-offer-answer", data);
     }
   });
 
