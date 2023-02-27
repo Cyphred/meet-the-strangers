@@ -116,3 +116,42 @@ export const getOutgoingCallDialog = (cancelCallHandler) => {
 
   return dialog;
 };
+
+export const getInfoDialog = (title, description) => {
+  // Dialog wrapper
+  const dialog = document.createElement("div");
+  dialog.classList.add("dialog_wrapper");
+
+  const dialogContent = document.createElement("div");
+  dialogContent.classList.add("dialog_content");
+  dialog.appendChild(dialogContent);
+
+  // Dialog title
+  const dialogTitle = document.createElement("p");
+  dialogTitle.classList.add("dialog_title");
+  dialogTitle.innerHTML = title;
+
+  // Adds title to dialog
+  dialogContent.appendChild(dialogTitle);
+
+  // Avatar image
+  const imageContainer = document.createElement("div");
+  imageContainer.classList.add("dialog_image_container");
+  const image = document.createElement("img");
+  const avatarImagePath = "./utils/images/dialogAvatar.png";
+  image.src = avatarImagePath;
+  imageContainer.appendChild(image);
+
+  // Adds avatar image container to dialog
+  dialogContent.appendChild(imageContainer);
+
+  // Adds description to dialog
+  const dialogDescription = document.createElement("p");
+  dialogDescription.classList.add("dialog_description");
+  dialogDescription.innerHTML = description;
+
+  // Adds description to dialog
+  dialogContent.appendChild(dialogDescription);
+
+  return dialog;
+};

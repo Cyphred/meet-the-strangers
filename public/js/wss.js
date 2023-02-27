@@ -29,12 +29,15 @@ const handlePreOfferAnswer = (data) => {
   switch (preOfferAnswer) {
     case constants.preOfferAnswer.RECEIVER_NOT_FOUND:
       // Show dialog that user has not been found
+      ui.showInfoDialog(preOfferAnswer);
       break;
     case constants.preOfferAnswer.CALL_UNAVAILABLE:
       // Show dialog that user is not available for a call
+      ui.showInfoDialog(preOfferAnswer);
       break;
     case constants.preOfferAnswer.CALL_REJECTED:
       // Show dialog that call has been rejected
+      ui.showInfoDialog(preOfferAnswer);
       break;
     case constants.preOfferAnswer.CALL_ACCEPTED:
       // Send webRTC offer
