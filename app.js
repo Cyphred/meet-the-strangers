@@ -36,7 +36,13 @@ socketio.on("connection", (socket) => {
   });
 
   socket.on("pre-offer-answer", (data) => {
-    console.log(data);
+    const connectedPeer = connectedPeers.find(
+      (peerSocketId) => peerSocketId === data.callerSocketId
+    );
+
+    if (connectedPeer) {
+      socketio.to(data.callerSocketId).emit("pre-offer-answer", data);
+    }
   });
 
   socket.on("disconnect", () => {

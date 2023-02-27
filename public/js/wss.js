@@ -21,6 +21,27 @@ const handlePreOffer = (data) => {
   }
 };
 
+const handlePreOfferAnswer = (data) => {
+  const { preOfferAnswer } = data;
+
+  ui.removeAllDialogs();
+
+  switch (preOfferAnswer) {
+    case constants.preOfferAnswer.RECEIVER_NOT_FOUND:
+      // Show dialog that user has not been found
+      break;
+    case constants.preOfferAnswer.CALL_UNAVAILABLE:
+      // Show dialog that user is not available for a call
+      break;
+    case constants.preOfferAnswer.CALL_REJECTED:
+      // Show dialog that call has been rejected
+      break;
+    case constants.preOfferAnswer.CALL_ACCEPTED:
+      // Send webRTC offer
+      break;
+  }
+};
+
 export const sendPreOffer = (callType, receiverCode) => {
   connectedUserDetails = {
     callType,
@@ -38,18 +59,14 @@ export const sendPreOffer = (callType, receiverCode) => {
 };
 
 const acceptCallHandler = () => {
-  console.log("Call accepted");
   sendPreOfferAnswer(constants.preOfferAnswer.CALL_ACCEPTED);
 };
 
 const rejectCallHandler = () => {
-  console.log("Call rejected");
   sendPreOfferAnswer(constants.preOfferAnswer.CALL_REJECTED);
 };
 
-const cancelCallHandler = () => {
-  console.log("Call cancelled");
-};
+const cancelCallHandler = () => {};
 
 export const registerSocketEvents = (socket) => {
   socketIO = socket;
@@ -64,6 +81,10 @@ export const registerSocketEvents = (socket) => {
     // webRTCHandler.handlePreOffer(data);
     handlePreOffer(data);
   });
+
+  socket.on("pre-offer-answer", (data) => {
+    handlePreOfferAnswer(data);
+  });
 };
 
 const sendPreOfferAnswer = (preOfferAnswer) => {
@@ -72,5 +93,6 @@ const sendPreOfferAnswer = (preOfferAnswer) => {
     preOfferAnswer,
   };
 
+  ui.removeAllDialogs();
   socketIO.emit("pre-offer-answer", data);
 };
