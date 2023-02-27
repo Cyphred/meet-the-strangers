@@ -76,3 +76,69 @@ export const showInfoDialog = (preOfferAnswer) => {
     }, [4000]);
   }
 };
+
+export const showCallElements = (callType) => {
+  switch (callType) {
+    case contsants.callType.CHAT_PERSONAL_CODE:
+      showChatCallElements();
+      break;
+    case contsants.callType.VIDEO_PERSONAL_CODE:
+      showVideoCallElements();
+      break;
+  }
+};
+
+const showChatCallElements = () => {
+  const finishConnectionChatButtonContainer = document.getElementById(
+    "finish_chat_buttton_container"
+  );
+  showElement(finishConnectionChatButtonContainer);
+
+  const newMessageInput = document.getElementById("new_message");
+  showElement(newMessageInput);
+
+  // Block panel
+  disableDashboard();
+};
+
+const showVideoCallElements = () => {
+  const callButtons = document.getElementById("call_buttons");
+  showElement(callButtons);
+
+  const remoteVideo = document.getElementById("remote_video");
+  showElement(remoteVideo);
+
+  const newMessageInput = document.getElementById("new_message");
+  showElement(newMessageInput);
+
+  // Block panel
+  disableDashboard();
+};
+
+// UI helper functions
+
+const enableDashboard = () => {
+  const dashboardBlocker = document.getElementById("dashboard_blur");
+  if (!dashboardBlocker.classList.contains("display_none")) {
+    dashboardBlocker.classList.add("display_none");
+  }
+};
+
+const disableDashboard = () => {
+  const dashboardBlocker = document.getElementById("dashboard_blur");
+  if (!dashboardBlocker.classList.contains("display_none")) {
+    dashboardBlocker.classList.remove("display_none");
+  }
+};
+
+const hideElement = () => {
+  if (!elements.classList.contains("display_none")) {
+    elements.classList.add("display_none");
+  }
+};
+
+const showElement = (element) => {
+  if (element.classList.contains("display_none")) {
+    element.classList.remove("display_none");
+  }
+};
