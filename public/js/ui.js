@@ -131,9 +131,9 @@ const disableDashboard = () => {
   }
 };
 
-const hideElement = () => {
-  if (!elements.classList.contains("display_none")) {
-    elements.classList.add("display_none");
+const hideElement = (element) => {
+  if (!element.classList.contains("display_none")) {
+    element.classList.add("display_none");
   }
 };
 
