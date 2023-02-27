@@ -23,8 +23,7 @@ export const showIncomingCallDialog = (
   );
 
   // Removes all existing dialog elements before appending a new one
-  const dialog = document.getElementById("dialog");
-  dialog.querySelectorAll("*").forEach((dialog) => dialog.remove());
+  removeAllDialogs();
 
   dialog.appendChild(incomingCallDialog);
 };
@@ -33,8 +32,12 @@ export const showOutgoingCallDialog = (cancelCallHandler) => {
   const callingDialog = elements.getOutgoingCallDialog(cancelCallHandler);
 
   // Removes all existing dialog elements before appending a new one
-  const dialog = document.getElementById("dialog");
-  dialog.querySelectorAll("*").forEach((dialog) => dialog.remove());
+  removeAllDialogs();
 
   dialog.appendChild(callingDialog);
+};
+
+export const removeAllDialogs = () => {
+  const dialog = document.getElementById("dialog");
+  dialog.querySelectorAll("*").forEach((dialog) => dialog.remove());
 };
