@@ -40,7 +40,7 @@ export const getIncomingCallDialog = (
   const acceptCallImg = document.createElement("img");
   acceptCallImg.classList.add("dialog_button_image");
   const acceptCallImgPath = "./utils/images/acceptCall.png";
-  acceptCallImg.path = acceptCallImgPath;
+  acceptCallImg.src = acceptCallImgPath;
   acceptCallButton.append(acceptCallImg);
   buttonContainer.appendChild(acceptCallButton);
 
@@ -50,7 +50,7 @@ export const getIncomingCallDialog = (
   const rejectCallImg = document.createElement("img");
   rejectCallImg.classList.add("dialog_button_image");
   const rejectCallImgPath = "./utils/images/rejectCall.png";
-  rejectCallImg.path = rejectCallImgPath;
+  rejectCallImg.src = rejectCallImgPath;
   rejectCallButton.append(rejectCallImg);
   buttonContainer.appendChild(rejectCallButton);
 
