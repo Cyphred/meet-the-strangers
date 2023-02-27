@@ -1,10 +1,32 @@
 import * as store from "./store.js";
 import * as ui from "./ui.js";
+import * as constants from "./constants.js";
 
 let socketIO = null;
+let connectedUserDetails;
 
 const handlePreOffer = (data) => {
-  console.log(data);
+  const { callType, callerSocketId } = data;
+
+  connectedUserDetails = {
+    socketId: callerSocketId,
+    callType,
+  };
+
+  switch (callType) {
+    case constants.callType.CHAT_PERSONAL_CODE:
+    case constants.callType.VIDEO_PERSONAL_CODE:
+      ui.showIncomingCallDialog(callType, acceptCallHandler, rejectCallHandler);
+      break;
+  }
+};
+
+const acceptCallHandler = () => {
+  console.log("Call accepted");
+};
+
+const rejectCallHandler = () => {
+  console.log("Call rejected");
 };
 
 export const sendPreOffer = (callType, receiverCode) => {
