@@ -35,6 +35,10 @@ socketio.on("connection", (socket) => {
     }
   });
 
+  socket.on("pre-offer-answer", (data) => {
+    console.log(data);
+  });
+
   socket.on("disconnect", () => {
     const newConnectedPeers = connectedPeers.filter((peerSocketId) => {
       return peerSocketId !== socket.id;
