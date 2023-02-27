@@ -39,10 +39,12 @@ export const sendPreOffer = (callType, receiverCode) => {
 
 const acceptCallHandler = () => {
   console.log("Call accepted");
+  sendPreOfferAnswer(constants.preOfferAnswer.CALL_ACCEPTED);
 };
 
 const rejectCallHandler = () => {
   console.log("Call rejected");
+  sendPreOfferAnswer(constants.preOfferAnswer.CALL_REJECTED);
 };
 
 const cancelCallHandler = () => {
@@ -62,4 +64,13 @@ export const registerSocketEvents = (socket) => {
     // webRTCHandler.handlePreOffer(data);
     handlePreOffer(data);
   });
+};
+
+const sendPreOfferAnswer = (preOfferAnswer) => {
+  const data = {
+    callerSocketId: connectedUserDetails.socketId,
+    preOfferAnswer,
+  };
+
+  socketIO.emit("pre-offer-answer", data);
 };
