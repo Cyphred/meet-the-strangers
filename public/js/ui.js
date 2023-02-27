@@ -90,7 +90,7 @@ export const showCallElements = (callType) => {
 
 const showChatCallElements = () => {
   const finishConnectionChatButtonContainer = document.getElementById(
-    "finish_chat_buttton_container"
+    "finish_chat_button_container"
   );
   showElement(finishConnectionChatButtonContainer);
 
