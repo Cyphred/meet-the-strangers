@@ -21,4 +21,20 @@ export const showIncomingCallDialog = (
     acceptCallHandler,
     rejectCallHandler
   );
+
+  // Removes all existing dialog elements before appending a new one
+  const dialog = document.getElementById("dialog");
+  dialog.querySelectorAll("*").forEach((dialog) => dialog.remove());
+
+  dialog.appendChild(incomingCallDialog);
+};
+
+export const showOutgoingCallDialog = (cancelCallHandler) => {
+  const callingDialog = elements.getOutgoingCallDialog(cancelCallHandler);
+
+  // Removes all existing dialog elements before appending a new one
+  const dialog = document.getElementById("dialog");
+  dialog.querySelectorAll("*").forEach((dialog) => dialog.remove());
+
+  dialog.appendChild(callingDialog);
 };

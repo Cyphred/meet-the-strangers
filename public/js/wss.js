@@ -21,6 +21,22 @@ const handlePreOffer = (data) => {
   }
 };
 
+export const sendPreOffer = (callType, receiverCode) => {
+  connectedUserDetails = {
+    callType,
+    socketId: receiverCode,
+  };
+
+  switch (callType) {
+    case constants.callType.CHAT_PERSONAL_CODE:
+    case constants.callType.VIDEO_PERSONAL_CODE:
+      ui.showOutgoingCallDialog(cancelCallHandler);
+      break;
+  }
+
+  socketIO.emit("pre-offer", { callType, receiverCode });
+};
+
 const acceptCallHandler = () => {
   console.log("Call accepted");
 };
@@ -29,8 +45,8 @@ const rejectCallHandler = () => {
   console.log("Call rejected");
 };
 
-export const sendPreOffer = (callType, receiverCode) => {
-  socketIO.emit("pre-offer", { callType, receiverCode });
+const cancelCallHandler = () => {
+  console.log("Call cancelled");
 };
 
 export const registerSocketEvents = (socket) => {
