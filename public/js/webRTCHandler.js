@@ -160,4 +160,7 @@ export const handleWebRTCOffer = async (data) => {
     answer,
   });
 };
+
+export const handleWebRTCAnswer = async (data) => {
+  await peerConnection.setRemoteDescription(data.answer);
 };
