@@ -28,6 +28,8 @@ export const registerSocketEvents = (socket) => {
         break;
       case constants.webRTCSignalling.ANSWER:
         webRTCHandler.handleWebRTCAnswer(data);
+      case constants.webRTCSignalling.ICE_CANDIDATE:
+        webRTCHandler.handleWebRTCCandidate(data);
       default:
         return;
     }
