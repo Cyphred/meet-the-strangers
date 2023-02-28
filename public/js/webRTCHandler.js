@@ -150,7 +150,14 @@ const sendWebRTCOffer = async () => {
   });
 };
 
-export const handleWebRTCOffer = (data) => {
-  console.log("webRTC offer received");
-  console.log(data);
+export const handleWebRTCOffer = async (data) => {
+  await peerConnection.setRemoteDescription(data.offer);
+  const answer = await peerConnection.createAnswer();
+  await peerConnection.setLocalDescription(answer);
+  wss.sendDataUsingWebRTCSignalling({
+    connectedUserSocketId: connectedUserDetails.socketId,
+    type: constants.webRTCSignalling.ANSWER,
+    answer,
+  });
+};
 };
