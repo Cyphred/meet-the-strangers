@@ -6,6 +6,8 @@ import * as wss from "./wss.js";
 const socket = io("/");
 wss.registerSocketEvents(socket);
 
+wss.getLocalPreview();
+
 // Registers event for personal code copy button
 const personalCodeCopyButton = document.getElementById(
   "personal_code_copy_button"

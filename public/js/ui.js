@@ -8,6 +8,21 @@ export const updatePersonalCode = (personalCode) => {
   personalCodeParagraph.innerHTML = personalCode;
 };
 
+// Updates the placeholder for the local video stream with the
+// provided media stream
+export const updateLocalVideo = (stream) => {
+  // Fetch element where stream will be playing
+  const localVideo = document.getElementById("local_video");
+
+  // Set the provided stream as the source object
+  localVideo.srcObject = stream;
+
+  // Play the video once its metadata is loaded
+  localVideo.addEventListener("loadmetadata", () => {
+    localVideo.onplay();
+  });
+};
+
 export const showIncomingCallDialog = (
   callType,
   acceptCallHandler,
