@@ -53,6 +53,18 @@ socketio.on("connection", (socket) => {
     }
   });
 
+  socket.on("webRTC-signalling", (data) => {
+    const { connectedUserSocketId } = data;
+
+    const connectedPeer = connectedPeers.find(
+      (peerSocketId) => peerSocketId === connectedUserSocketId
+    );
+
+    if (connectedPeer) {
+      socketio.to(connectedUserSocketId).emit("webRTC-signalling", data);
+    }
+  });
+
   socket.on("disconnect", () => {
     const newConnectedPeers = connectedPeers.filter((peerSocketId) => {
       return peerSocketId !== socket.id;
