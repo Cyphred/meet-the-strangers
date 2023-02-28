@@ -165,3 +165,22 @@ const showElement = (element) => {
     element.classList.remove("display_none");
   }
 };
+
+// UI call buttons
+
+const micOnImgSrc = "./utils/images/mic.png";
+const micOffImgSrc = "./utils/images/micOff.png";
+
+export const updateMicButton = (enabled) => {
+  const micButtonImage = document.getElementById("mic_button_image");
+  micButtonImage.src = enabled ? micOnImgSrc : micOffImgSrc;
+};
+
+const cameraOnImgSrc = "./utils/images/camera.png";
+const cameraOffImgSrc = "./utils/images/cameraOff.png";
+
+export const updateCameraButton = (enabled) => {
+  console.log("Updating icon to", enabled);
+  const cameraButtonImage = document.getElementById("camera_button_image");
+  cameraButtonImage.src = enabled ? cameraOnImgSrc : cameraOffImgSrc;
+};
