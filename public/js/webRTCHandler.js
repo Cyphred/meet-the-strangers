@@ -3,8 +3,10 @@ import * as store from "./store.js";
 import * as constants from "./constants.js";
 import * as ui from "./ui.js";
 
-let connectedUserDetails;
-let peerConnection;
+let connectedUserDetails; // Stores the information of the connected peer
+let peerConnection; // Stores the information of the connection with peer
+
+// Defines the user media to request permissions for
 const defaultConstraints = {
   audio: true,
   video: true,
@@ -14,12 +16,17 @@ const configuration = {
   iceServers: [{ urls: "stun:stun.l.google.com:13902" }],
 };
 
+/**
+ * Sets up the local video stream
+ */
 export const getLocalPreview = () => {
-  // Gets user media devices
   navigator.mediaDevices
-    .getUserMedia(defaultConstraints)
+    .getUserMedia(defaultConstraints) // Gets user media devices
     .then((stream) => {
+      // Update UI to show local stream
       ui.updateLocalVideo(stream);
+
+      // Save local stream to state
       store.setLocalStream(stream);
     })
     .catch((err) => {
@@ -27,45 +34,66 @@ export const getLocalPreview = () => {
     });
 };
 
+/**
+ * Initializes a webRTC peer connection
+ */
 const createPeerConnection = () => {
+  // Initialize with defined settings
   peerConnection = new RTCPeerConnection(configuration);
+
+  // Event listener upon receiving ICE candidate
   peerConnection.onicecandidate = (event) => {
     if (event.candidate) {
-      // Send our ICE candidates to peer
-    }
-  };
-  peerConnection.onconnectionstatechange = (event) => {
-    if (peerConnection.connectionState === "connected") {
+      // TODO Send our ICE candidates to peer
     }
   };
 
-  // Receiving tracks
+  // Event listener upon connection state changing
+  peerConnection.onconnectionstatechange = (event) => {
+    if (peerConnection.connectionState === "connected") {
+      // TODO add logic for when the connection's status is 'connected'
+    }
+  };
+
+  // Prepare state and UI to accommodate an incoming media stream
   const remoteStream = new MediaStream();
   store.setRemoteStream(remoteStream);
   ui.updateRemoteVideo(remoteStream);
 
+  // Event listener upon receiving tracks
   peerConnection.ontrack = (event) => {
+    // Send incoming media stream to prepared stream
     remoteStream.addTrack(event.track);
   };
 
-  // Add our stream to peer connection
+  // Add our stream to peer connection for sending if call type is video
   if (
     connectedUserDetails.callType === constants.callType.VIDEO_PERSONAL_CODE
   ) {
+    // Fetch local stream object
     const localStream = store.getState().localStream;
 
+    // Iterate through stored audio and video stream and add them to peer connection
     for (const track of localStream.getTracks()) {
       peerConnection.addTrack(track, localStream);
     }
   }
 };
 
+/**
+ * Prepares a webRTC offer before sending it to a peer
+ * @param {String} callType is the constant defining the type of call
+ * @param {String} receiverCode is the socket ID of the receiver
+ */
 export const sendPreOffer = (callType, receiverCode) => {
+  // Save the peer and the call's details
   connectedUserDetails = {
     callType,
     socketId: receiverCode,
   };
 
+  // Show outgoing call dialog when initiating either a video or
+  // chat call using a personal code
   switch (callType) {
     case constants.callType.CHAT_PERSONAL_CODE:
     case constants.callType.VIDEO_PERSONAL_CODE:
@@ -73,17 +101,26 @@ export const sendPreOffer = (callType, receiverCode) => {
       break;
   }
 
+  // Emits the offer to the receiver
   wss.sendPreOffer({ callType, receiverCode });
 };
 
+/**
+ * Handles incoming pre-offers
+ * @param {Object} data is the object containing the pre-offer's information
+ */
 export const handlePreOffer = (data) => {
+  // Destructure the required data
   const { callType, callerSocketId } = data;
 
+  // Update the connected user's details
   connectedUserDetails = {
     socketId: callerSocketId,
     callType,
   };
 
+  // Show incoming call dialog when a pre-offer for a chat or video call
+  // using a personal code is received
   switch (callType) {
     case constants.callType.CHAT_PERSONAL_CODE:
     case constants.callType.VIDEO_PERSONAL_CODE:
@@ -92,18 +129,28 @@ export const handlePreOffer = (data) => {
   }
 };
 
+/**
+ * Handles the acceptance of a call
+ */
 const acceptCallHandler = () => {
   createPeerConnection();
   sendPreOfferAnswer(constants.preOfferAnswer.CALL_ACCEPTED);
   ui.showCallElements(connectedUserDetails.callType);
 };
 
+/**
+ * Handles the rejection of a call
+ */
 const rejectCallHandler = () => {
   sendPreOfferAnswer(constants.preOfferAnswer.CALL_REJECTED);
 };
 
 const cancelCallHandler = () => {};
 
+/**
+ * Sends an answer to the pre-offer and updates the UI accordingly
+ * @param {String} preOfferAnswer is the answer to be returned to the caller
+ */
 const sendPreOfferAnswer = (preOfferAnswer) => {
   const data = {
     callerSocketId: connectedUserDetails.socketId,
@@ -114,6 +161,10 @@ const sendPreOfferAnswer = (preOfferAnswer) => {
   wss.sendPreOfferAnswer(data);
 };
 
+/**
+ * Handles incoming answers to a previous pre-offer
+ * @param {Object} data is the contents of the incoming answer
+ */
 export const handlePreOfferAnswer = (data) => {
   const { preOfferAnswer } = data;
 
@@ -140,6 +191,9 @@ export const handlePreOfferAnswer = (data) => {
   }
 };
 
+/**
+ * Sends a webRTC offer to the connected peer
+ */
 const sendWebRTCOffer = async () => {
   const offer = await peerConnection.createOffer();
   await peerConnection.setLocalDescription(offer);
@@ -150,10 +204,16 @@ const sendWebRTCOffer = async () => {
   });
 };
 
+/**
+ * Handles incoming webRTC offers
+ * @param {Object} data is the information received from the webRTC signal
+ */
 export const handleWebRTCOffer = async (data) => {
+  // Setting of SDP data
   await peerConnection.setRemoteDescription(data.offer);
   const answer = await peerConnection.createAnswer();
   await peerConnection.setLocalDescription(answer);
+
   wss.sendDataUsingWebRTCSignalling({
     connectedUserSocketId: connectedUserDetails.socketId,
     type: constants.webRTCSignalling.ANSWER,
@@ -161,6 +221,10 @@ export const handleWebRTCOffer = async (data) => {
   });
 };
 
+/**
+ * Handles incoming webRTC answers
+ * @param {Object} data is the information received from the webRTC answer
+ */
 export const handleWebRTCAnswer = async (data) => {
   await peerConnection.setRemoteDescription(data.answer);
 };
