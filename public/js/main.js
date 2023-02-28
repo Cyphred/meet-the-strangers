@@ -1,12 +1,13 @@
 import * as store from "./store.js";
 import * as constants from "./constants.js";
 import * as wss from "./wss.js";
+import * as webRTCHandler from "./webRTCHandler.js";
 
 // Initializtion of socketIO connection
 const socket = io("/");
 wss.registerSocketEvents(socket);
 
-wss.getLocalPreview();
+webRTCHandler.getLocalPreview();
 
 // Registers event for personal code copy button
 const personalCodeCopyButton = document.getElementById(

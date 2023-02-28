@@ -5,26 +5,6 @@ import * as constants from "./constants.js";
 let socketIO = null;
 let connectedUserDetails;
 
-const defaultConstraints = {
-  audio: true,
-  video: true,
-};
-
-export const getLocalPreview = () => {
-  // Gets user media devices
-  navigator.mediaDevices
-    .getUserMedia(defaultConstraints)
-    .then((stream) => {
-      console.log("Stream fetched");
-      ui.updateLocalVideo(stream);
-      store.setLocalStream(stream);
-    })
-    .catch((err) => {
-      console.log("Error accessing local media streams");
-      console.error(err);
-    });
-};
-
 const handlePreOffer = (data) => {
   const { callType, callerSocketId } = data;
 
