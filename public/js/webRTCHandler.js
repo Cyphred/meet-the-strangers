@@ -1,7 +1,9 @@
+import * as wss from "./wss.js";
 import * as store from "./store.js";
 import * as constants from "./constants.js";
 import * as ui from "./ui.js";
 
+let connectedUserDetails;
 let peerConnection;
 const defaultConstraints = {
   audio: true,
@@ -17,12 +19,10 @@ export const getLocalPreview = () => {
   navigator.mediaDevices
     .getUserMedia(defaultConstraints)
     .then((stream) => {
-      console.log("Stream fetched");
       ui.updateLocalVideo(stream);
       store.setLocalStream(stream);
     })
     .catch((err) => {
-      console.log("Error accessing local media streams");
       console.error(err);
     });
 };
@@ -36,7 +36,6 @@ const createPeerConnection = () => {
   };
   peerConnection.onconnectionstatechange = (event) => {
     if (peerConnection.connectionState === "connected") {
-      console.log("Successfully connected with peer");
     }
   };
 
@@ -48,4 +47,82 @@ const createPeerConnection = () => {
   peerConnection.ontrack = (event) => {
     remoteStream.addTrack(event.track);
   };
+};
+
+export const sendPreOffer = (callType, receiverCode) => {
+  connectedUserDetails = {
+    callType,
+    socketId: receiverCode,
+  };
+
+  switch (callType) {
+    case constants.callType.CHAT_PERSONAL_CODE:
+    case constants.callType.VIDEO_PERSONAL_CODE:
+      ui.showOutgoingCallDialog(cancelCallHandler);
+      break;
+  }
+
+  wss.sendPreOffer({ callType, receiverCode });
+};
+
+export const handlePreOffer = (data) => {
+  const { callType, callerSocketId } = data;
+
+  connectedUserDetails = {
+    socketId: callerSocketId,
+    callType,
+  };
+
+  switch (callType) {
+    case constants.callType.CHAT_PERSONAL_CODE:
+    case constants.callType.VIDEO_PERSONAL_CODE:
+      ui.showIncomingCallDialog(callType, acceptCallHandler, rejectCallHandler);
+      break;
+  }
+};
+
+const acceptCallHandler = () => {
+  sendPreOfferAnswer(constants.preOfferAnswer.CALL_ACCEPTED);
+  ui.showCallElements(connectedUserDetails.callType);
+};
+
+const rejectCallHandler = () => {
+  sendPreOfferAnswer(constants.preOfferAnswer.CALL_REJECTED);
+};
+
+const cancelCallHandler = () => {};
+
+const sendPreOfferAnswer = (preOfferAnswer) => {
+  const data = {
+    callerSocketId: connectedUserDetails.socketId,
+    preOfferAnswer,
+  };
+
+  ui.removeAllDialogs();
+  wss.sendPreOfferAnswer(data);
+};
+
+export const handlePreOfferAnswer = (data) => {
+  const { preOfferAnswer } = data;
+
+  ui.removeAllDialogs();
+
+  switch (preOfferAnswer) {
+    case constants.preOfferAnswer.RECEIVER_NOT_FOUND:
+      // Show dialog that user has not been found
+      ui.showInfoDialog(preOfferAnswer);
+      break;
+    case constants.preOfferAnswer.CALL_UNAVAILABLE:
+      // Show dialog that user is not available for a call
+      ui.showInfoDialog(preOfferAnswer);
+      break;
+    case constants.preOfferAnswer.CALL_REJECTED:
+      // Show dialog that call has been rejected
+      ui.showInfoDialog(preOfferAnswer);
+      break;
+    case constants.preOfferAnswer.CALL_ACCEPTED:
+      // Send webRTC offer
+      ui.showCallElements(connectedUserDetails.callType);
+      break;
+  }
 };

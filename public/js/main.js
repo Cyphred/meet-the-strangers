@@ -7,6 +7,7 @@ import * as webRTCHandler from "./webRTCHandler.js";
 const socket = io("/");
 wss.registerSocketEvents(socket);
 
+// Shows local video preview
 webRTCHandler.getLocalPreview();
 
 // Registers event for personal code copy button
@@ -16,7 +17,7 @@ const personalCodeCopyButton = document.getElementById(
 personalCodeCopyButton.addEventListener("click", () => {
   const personalCode = store.getState().socketId;
   navigator.clipboard && navigator.clipboard.writeText(personalCode);
-  alert("Your perosnal code has been copied to the clipboard!");
+  //alert("Your perosnal code has been copied to the clipboard!");
 });
 
 // Registers event listeners for connection buttons
@@ -31,14 +32,14 @@ const personalCodeVideoButton = document.getElementById(
 const personalCodeInput = document.getElementById("personal_code_input");
 
 personalCodeChatButton.addEventListener("click", () => {
-  wss.sendPreOffer(
+  webRTCHandler.sendPreOffer(
     constants.callType.CHAT_PERSONAL_CODE,
     personalCodeInput.value
   );
 });
 
 personalCodeVideoButton.addEventListener("click", () => {
-  wss.sendPreOffer(
+  webRTCHandler.sendPreOffer(
     constants.callType.VIDEO_PERSONAL_CODE,
     personalCodeInput.value
   );
