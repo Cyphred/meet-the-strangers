@@ -244,3 +244,55 @@ export const handleWebRTCCandidate = async (data) => {
     );
   }
 };
+
+let screenSharingStream;
+
+export const toggleScreenSharing = async (enabled) => {
+  if (enabled) {
+    const localStream = store.getState().localStream;
+    const senders = peerConnection.getSenders();
+    const videoSender = senders.find((sender) => {
+      return sender.track.kind === localStream.getVideoTracks()[0].kind;
+    });
+    if (videoSender) {
+      videoSender.replaceTrack(localStream.getVideoTracks()[0]);
+    }
+
+    // Stop screen sharing stream
+    store
+      .getState()
+      .screenSharingStream.getTracks()
+      .forEach((track) => track.stop());
+
+    store.setScreenSharingActive(!enabled);
+
+    ui.updateLocalVideo(localStream);
+  } else {
+    try {
+      screenSharingStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+      });
+      store.setScreenSharingStream(screenSharingStream);
+
+      // Replace current video track that is being sent
+      const senders = peerConnection.getSenders();
+      const videoSender = senders.find((sender) => {
+        return (
+          sender.track.kind === screenSharingStream.getVideoTracks()[0].kind
+        );
+      });
+      if (videoSender) {
+        videoSender.replaceTrack(screenSharingStream.getVideoTracks()[0]);
+      }
+
+      store.setScreenSharingActive(!enabled);
+
+      ui.updateLocalVideo(screenSharingStream);
+    } catch (err) {
+      console.error(
+        "Error occurred when trying to get screen sharing stream",
+        err
+      );
+    }
+  }
+};
