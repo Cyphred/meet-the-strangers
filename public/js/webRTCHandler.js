@@ -47,6 +47,17 @@ const createPeerConnection = () => {
   peerConnection.ontrack = (event) => {
     remoteStream.addTrack(event.track);
   };
+
+  // Add our stream to peer connection
+  if (
+    connectedUserDetails.callType === constants.callType.VIDEO_PERSONAL_CODE
+  ) {
+    const localStream = store.getState().localStream;
+
+    for (const track of localStream.getTracks()) {
+      peerConnection.addTrack(track, localStream);
+    }
+  }
 };
 
 export const sendPreOffer = (callType, receiverCode) => {
