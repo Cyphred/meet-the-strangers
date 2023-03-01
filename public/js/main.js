@@ -79,6 +79,7 @@ newMessageInput.addEventListener("keydown", (event) => {
 
   if (key === "Enter") {
     webRTCHandler.sendMessageUsingDataChannel(event.target.value);
+    ui.appendMessage(event.target.value, true);
     newMessageInput.value = "";
   }
 });
