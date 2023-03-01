@@ -47,12 +47,10 @@ const createPeerConnection = () => {
 
   peerConnection.ondatachannel = (event) => {
     const dataChannel = event.channel;
-    dataChannel.onopen = () => {
-      console.log("Peer connection is ready to receive data channel messages");
-    };
+    dataChannel.onopen = () => {};
 
     dataChannel.onmessage = (event) => {
-      const message = JSON.parse(event);
+      const message = JSON.parse(event.data);
     };
   };
 
