@@ -5,6 +5,7 @@ import * as ui from "./ui.js";
 
 let connectedUserDetails; // Stores the information of the connected peer
 let peerConnection; // Stores the information of the connection with peer
+let dataChannel; // Stores the data channel for transceiving text
 
 // Defines the user media to request permissions for
 const defaultConstraints = {
@@ -40,6 +41,20 @@ export const getLocalPreview = () => {
 const createPeerConnection = () => {
   // Initialize with defined settings
   peerConnection = new RTCPeerConnection(configuration);
+
+  // Creates a data channel named "chat"
+  dataChannel = peerConnection.createDataChannel("chat");
+
+  peerConnection.ondatachannel = (event) => {
+    const dataChannel = event.channel;
+    dataChannel.onopen = () => {
+      console.log("Peer connection is ready to receive data channel messages");
+    };
+
+    dataChannel.onmessage = (event) => {
+      const message = JSON.parse(event);
+    };
+  };
 
   // Event listener upon receiving ICE candidate
   peerConnection.onicecandidate = (event) => {
@@ -83,6 +98,12 @@ const createPeerConnection = () => {
       peerConnection.addTrack(track, localStream);
     }
   }
+};
+
+// TODO document this
+export const sendMessageUsingDataChannel = (message) => {
+  const stringifiedMessage = JSON.stringify(message);
+  dataChannel.send(stringifiedMessage);
 };
 
 /**
