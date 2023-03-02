@@ -109,6 +109,7 @@ export const getOutgoingCallDialog = (cancelCallHandler) => {
   const rejectCallImgPath = "./utils/images/rejectCall.png";
   rejectCallImg.src = rejectCallImgPath;
   rejectCallButton.append(rejectCallImg);
+  rejectCallButton.addEventListener("click", cancelCallHandler);
   buttonContainer.appendChild(rejectCallButton);
 
   // Adds button container to dialog

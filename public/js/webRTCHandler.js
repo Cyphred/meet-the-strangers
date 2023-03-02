@@ -192,7 +192,16 @@ const rejectCallHandler = () => {
   setIncomingCallsAvailable();
 };
 
-const cancelCallHandler = () => {};
+/**
+ * Handles cancelling a call initiated by the user
+ */
+const cancelCallHandler = () => {
+  const data = {
+    connectedUserSocketId: connectedUserDetails.socketId,
+  };
+  closePeerConnectionAndResetState();
+  wss.sendUserHangedUp(data);
+};
 
 /**
  * Sends an answer to the pre-offer and updates the UI accordingly
