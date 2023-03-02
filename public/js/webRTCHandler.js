@@ -132,6 +132,9 @@ export const sendPreOffer = (callType, receiverCode) => {
       break;
   }
 
+  // Makes caller unavailable for calling before sending the offer
+  store.setCallState(constants.callState.CALL_UNAVAILABLE);
+
   // Emits the offer to the receiver
   wss.sendPreOffer({ callType, receiverCode });
 };
@@ -144,11 +147,21 @@ export const handlePreOffer = (data) => {
   // Destructure the required data
   const { callType, callerSocketId } = data;
 
+  if (!checkCallPossibility(callType)) {
+    return sendPreOfferAnswer(
+      constants.preOfferAnswer.CALL_UNAVAILABLE,
+      callerSocketId
+    );
+  }
+
   // Update the connected user's details
   connectedUserDetails = {
     socketId: callerSocketId,
     callType,
   };
+
+  // Make receiver unavailable
+  store.setCallState(constants.callState.CALL_UNAVAILABLE);
 
   // Show incoming call dialog when a pre-offer for a chat or video call
   // using a personal code is received
@@ -174,6 +187,7 @@ const acceptCallHandler = () => {
  */
 const rejectCallHandler = () => {
   sendPreOfferAnswer(constants.preOfferAnswer.CALL_REJECTED);
+  setIncomingCallsAvailable();
 };
 
 const cancelCallHandler = () => {};
@@ -182,9 +196,12 @@ const cancelCallHandler = () => {};
  * Sends an answer to the pre-offer and updates the UI accordingly
  * @param {String} preOfferAnswer is the answer to be returned to the caller
  */
-const sendPreOfferAnswer = (preOfferAnswer) => {
+const sendPreOfferAnswer = (preOfferAnswer, callerSocketId = null) => {
+  const socketId = callerSocketId
+    ? callerSocketId
+    : connectedUserDetails.socketId;
   const data = {
-    callerSocketId: connectedUserDetails.socketId,
+    callerSocketId: socketId,
     preOfferAnswer,
   };
 
@@ -205,14 +222,17 @@ export const handlePreOfferAnswer = (data) => {
     case constants.preOfferAnswer.RECEIVER_NOT_FOUND:
       // Show dialog that user has not been found
       ui.showInfoDialog(preOfferAnswer);
+      setIncomingCallsAvailable();
       break;
     case constants.preOfferAnswer.CALL_UNAVAILABLE:
       // Show dialog that user is not available for a call
       ui.showInfoDialog(preOfferAnswer);
+      setIncomingCallsAvailable();
       break;
     case constants.preOfferAnswer.CALL_REJECTED:
       // Show dialog that call has been rejected
       ui.showInfoDialog(preOfferAnswer);
+      setIncomingCallsAvailable();
       break;
     case constants.preOfferAnswer.CALL_ACCEPTED:
       ui.showCallElements(connectedUserDetails.callType);
@@ -355,5 +375,39 @@ const closePeerConnectionAndResetState = () => {
   }
 
   ui.updateUIAfterHangUp(connectedUserDetails.callType);
+  setIncomingCallsAvailable();
   connectedUserDetails = null;
+};
+
+const checkCallPossibility = (callType) => {
+  const callState = store.getState().callState;
+
+  if (callState === constants.callState.CALL_AVAILABLE) {
+    return true;
+  }
+
+  // If a video call is requested but the receiver is only available for text chat
+  /* TODO possibly remove this block
+  if (
+    (callType === constants.callType.VIDEO_PERSONAL_CODE ||
+      callType === constants.callType.VIDEO_STRANGER) &&
+    callState === constants.callState.CALL_AVAILABLE_ONLY_CHAT
+  ) {
+    return false;
+  }
+  */
+
+  return false;
+};
+
+/**
+ * Sets call state depending on the availability of local video stream
+ */
+const setIncomingCallsAvailable = () => {
+  const localStream = store.getState().localStream;
+  if (localStream) {
+    store.setCallState(constants.callState.CALL_AVAILABLE);
+  } else {
+    store.setCallState(constants.callState.CALL_AVAILABLE_ONLY_CHAT);
+  }
 };
