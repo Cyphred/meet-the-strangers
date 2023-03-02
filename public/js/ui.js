@@ -148,7 +148,7 @@ export const appendMessage = (message, right = false) => {
 };
 export const clearMessenger = () => {
   const messagesContainer = document.getElementById("messages_container");
-  messagesContainer.querySelectorAll("*").forEach((n) => n.remove);
+  messagesContainer.querySelectorAll("*").forEach((n) => n.remove());
 };
 
 // Recording
