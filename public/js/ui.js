@@ -94,6 +94,12 @@ export const showInfoDialog = (preOfferAnswer) => {
         "User is currently engaged in a call."
       );
       break;
+    case constants.preOfferAnswer.NO_STRANGER_AVAILABLE:
+      infoDialog = elements.getInfoDialog(
+        "No Strangers Available",
+        "Could not find a stranger available for a call."
+      );
+      break;
   }
 
   if (infoDialog) {
