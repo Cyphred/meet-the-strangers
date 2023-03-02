@@ -89,6 +89,7 @@ const sendMessageButton = document.getElementById("send_message_button");
 sendMessageButton.addEventListener("click", () => {
   const message = newMessageInput.value;
   webRTCHandler.sendMessageUsingDataChannel(message);
+  ui.appendMessage(message, true);
   newMessageInput.value = "";
 });
 
