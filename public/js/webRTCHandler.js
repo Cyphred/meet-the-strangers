@@ -30,6 +30,9 @@ export const getLocalPreview = () => {
       // Shows video call buttons once local stream is available
       ui.showVideoCallButtons();
 
+      // Sets user's state to be available for a video call
+      store.setCallState(constants.callState.CALL_AVAILABLE);
+
       // Save local stream to state
       store.setLocalStream(stream);
     })
