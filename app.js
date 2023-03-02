@@ -19,7 +19,6 @@ let connectedPeersStrangers = [];
 
 socketio.on("connection", (socket) => {
   connectedPeers.push(socket.id);
-  console.log("peers", connectedPeers);
 
   socket.on("pre-offer", (data) => {
     const connectedPeer = connectedPeers.find((peerSocketId) => {
@@ -73,7 +72,6 @@ socketio.on("connection", (socket) => {
 
     connectedPeers = newConnectedPeers;
     removeFromStrangerPool(socket.id);
-    console.log("peers", connectedPeers);
   });
 
   socket.on("user-hanged-up", (data) => {
@@ -95,7 +93,6 @@ socketio.on("connection", (socket) => {
     } else {
       removeFromStrangerPool(socket.id);
     }
-    console.log("strangers", connectedPeersStrangers);
   });
 
   socket.on("get-stranger-socket-id", () => {
@@ -127,7 +124,6 @@ const removeFromStrangerPool = (socketID) => {
   );
 
   connectedPeersStrangers = newConnectedPeersStrangers;
-  console.log("strangers", connectedPeersStrangers);
 };
 
 server.listen(PORT, () => {

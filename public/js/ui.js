@@ -285,7 +285,6 @@ const cameraOnImgSrc = "./utils/images/camera.png";
 const cameraOffImgSrc = "./utils/images/cameraOff.png";
 
 export const updateCameraButton = (enabled) => {
-  console.log("Updating icon to", enabled);
   const cameraButtonImage = document.getElementById("camera_button_image");
   cameraButtonImage.src = enabled ? cameraOnImgSrc : cameraOffImgSrc;
 };
