@@ -325,6 +325,29 @@ export const handleHangUp = () => {
   };
 
   wss.sendUserHangedUp(data);
+  closePeerConnectionAndResetState();
 };
 
-export const handleConnectedUserHangedUp = () => {};
+export const handleConnectedUserHangedUp = () => {
+  closePeerConnectionAndResetState();
+};
+
+const closePeerConnectionAndResetState = () => {
+  if (peerConnection) {
+    peerConnection.close();
+    peerConnection = null;
+  }
+
+  // Set mic and camera active for the next call in case one or both
+  // is deactivated in the current call
+  if (
+    connectedUserDetails.callType === constants.callType.VIDEO_PERSONAL_CODE ||
+    connectedUserDetails.callType === constants.callType.VIDEO_STRANGER
+  ) {
+    store.getState().localStream.getVideoTracks()[0].enabled = true;
+    store.getState().localStream.getAudioTracks()[0].enabled = true;
+  }
+
+  ui.updateUIAfterHangUp(connectedUserDetails.callType);
+  connectedUserDetails = null;
+};

@@ -189,6 +189,42 @@ export const switchRecordingButtons = (switchForResumeButton = false) => {
   }
 };
 
+// UI after hanging up
+
+export const updateUIAfterHangUp = (callType) => {
+  enableDashboard();
+
+  // Hide the call buttons
+  if (
+    callType === constants.callType.VIDEO_PERSONAL_CODE ||
+    callType === constants.callType.VIDEO_STRANGER
+  ) {
+    const callButtons = document.getElementById("call_buttons");
+    hideElement(callButtons);
+  } else {
+    const chatCallButtons = document.getElementById(
+      "finish_chat_button_container"
+    );
+    hideElement(chatCallButtons);
+  }
+
+  const newMessageInput = document.getElementById("new_message");
+  hideElement(newMessageInput);
+  clearMessenger();
+
+  updateMicButton(false);
+  updateCameraButton(false);
+
+  // Hide remote video and show placeholder
+  const remoteVideo = document.getElementById("remote_video");
+  hideElement(remoteVideo);
+
+  const placeholder = document.getElementById("video_placeholder");
+  showElement(placeholder);
+
+  removeAllDialogs();
+};
+
 // UI helper functions
 
 const enableDashboard = () => {
