@@ -1,4 +1,4 @@
-import * as contsants from "./constants.js";
+import * as constants from "./constants.js";
 import * as elements from "./elements.js";
 
 export const updatePersonalCode = (personalCode) => {
@@ -34,7 +34,7 @@ export const showIncomingCallDialog = (
   rejectCallHandler
 ) => {
   const callTypeInfo =
-    callType === contsants.callType.CHAT_PERSONAL_CODE ? "Chat" : "Video";
+    callType === constants.callType.CHAT_PERSONAL_CODE ? "Chat" : "Video";
 
   const incomingCallDialog = elements.getIncomingCallDialog(
     callTypeInfo,
@@ -66,19 +66,19 @@ export const showInfoDialog = (preOfferAnswer) => {
   let infoDialog = null;
 
   switch (preOfferAnswer) {
-    case contsants.preOfferAnswer.CALL_REJECTED:
+    case constants.preOfferAnswer.CALL_REJECTED:
       infoDialog = elements.getInfoDialog(
         "Call rejected",
         "User has rejected your call."
       );
       break;
-    case contsants.preOfferAnswer.RECEIVER_NOT_FOUND:
+    case constants.preOfferAnswer.RECEIVER_NOT_FOUND:
       infoDialog = elements.getInfoDialog(
         "User not found",
         "You have entered an invalid code."
       );
       break;
-    case contsants.preOfferAnswer.CALL_UNAVAILABLE:
+    case constants.preOfferAnswer.CALL_UNAVAILABLE:
       infoDialog = elements.getInfoDialog(
         "Unable to contact User",
         "User is currently engaged in a call."
@@ -99,10 +99,10 @@ export const showInfoDialog = (preOfferAnswer) => {
 
 export const showCallElements = (callType) => {
   switch (callType) {
-    case contsants.callType.CHAT_PERSONAL_CODE:
+    case constants.callType.CHAT_PERSONAL_CODE:
       showChatCallElements();
       break;
-    case contsants.callType.VIDEO_PERSONAL_CODE:
+    case constants.callType.VIDEO_PERSONAL_CODE:
       showVideoCallElements();
       break;
   }
