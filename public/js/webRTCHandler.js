@@ -93,7 +93,8 @@ const createPeerConnection = () => {
 
   // Add our stream to peer connection for sending if call type is video
   if (
-    connectedUserDetails.callType === constants.callType.VIDEO_PERSONAL_CODE
+    connectedUserDetails.callType === constants.callType.VIDEO_PERSONAL_CODE ||
+    connectedUserDetails.callType === constants.callType.VIDEO_STRANGER
   ) {
     // Fetch local stream object
     const localStream = store.getState().localStream;
@@ -163,12 +164,18 @@ export const handlePreOffer = (data) => {
   // Make receiver unavailable
   store.setCallState(constants.callState.CALL_UNAVAILABLE);
 
-  // Show incoming call dialog when a pre-offer for a chat or video call
-  // using a personal code is received
   switch (callType) {
+    // Show incoming call dialog when a pre-offer for a chat or video call
+    // using a personal code is received
     case constants.callType.CHAT_PERSONAL_CODE:
     case constants.callType.VIDEO_PERSONAL_CODE:
       ui.showIncomingCallDialog(callType, acceptCallHandler, rejectCallHandler);
+      break;
+
+    // Automatically accept call from stranger
+    case constants.callType.CHAT_STRANGER:
+    case constants.callType.VIDEO_STRANGER:
+      acceptCallHandler();
       break;
   }
 };

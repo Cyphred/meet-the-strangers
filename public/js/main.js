@@ -48,7 +48,19 @@ personalCodeVideoButton.addEventListener("click", () => {
   );
 });
 
+const strangerChatButton = document.getElementById("stranger_chat_button");
+const strangerVideoButton = document.getElementById("stranger_video_button");
 const strangerCheckBox = document.getElementById("allow_strangers_checkbox");
+
+strangerChatButton.addEventListener("click", () => {
+  strangerUtils.getStrangerSocketIDAndConnect(constants.callType.CHAT_STRANGER);
+});
+
+strangerVideoButton.addEventListener("click", () => {
+  strangerUtils.getStrangerSocketIDAndConnect(
+    constants.callType.VIDEO_STRANGER
+  );
+});
 
 strangerCheckBox.addEventListener("click", () => {
   const checkboxState = store.getState().allowConnectionsFromStrangers;

@@ -110,9 +110,11 @@ export const showInfoDialog = (preOfferAnswer) => {
 export const showCallElements = (callType) => {
   switch (callType) {
     case constants.callType.CHAT_PERSONAL_CODE:
+    case constants.callType.CHAT_STRANGER:
       showChatCallElements();
       break;
     case constants.callType.VIDEO_PERSONAL_CODE:
+    case constants.callType.VIDEO_STRANGER:
       showVideoCallElements();
       break;
   }

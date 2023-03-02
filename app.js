@@ -97,6 +97,28 @@ socketio.on("connection", (socket) => {
     }
     console.log("strangers", connectedPeersStrangers);
   });
+
+  socket.on("get-stranger-socket-id", () => {
+    let randomStrangerSocketId;
+
+    // Removes caller's own socket Id from the selection
+    const filteredStrangers = connectedPeersStrangers.filter(
+      (peerSocketId) => peerSocketId !== socket.id
+    );
+
+    if (filteredStrangers.length > 0) {
+      randomStrangerSocketId =
+        filteredStrangers[Math.floor(Math.random() * filteredStrangers.length)];
+    } else {
+      randomStrangerSocketId = null;
+    }
+
+    const data = {
+      strangerSocketId: randomStrangerSocketId,
+    };
+
+    socketio.to(socket.id).emit("stranger-socket-id", data);
+  });
 });
 
 const removeFromStrangerPool = (socketID) => {
