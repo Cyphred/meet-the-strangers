@@ -281,3 +281,13 @@ export const updateCameraButton = (enabled) => {
   const cameraButtonImage = document.getElementById("camera_button_image");
   cameraButtonImage.src = enabled ? cameraOnImgSrc : cameraOffImgSrc;
 };
+
+export const updateStrangerCheckbox = (allowConnections) => {
+  const checkboxCheckImg = document.getElementById(
+    "allow_strangers_checkbox_image"
+  );
+
+  allowConnections
+    ? showElement(checkboxCheckImg)
+    : hideElement(checkboxCheckImg);
+};

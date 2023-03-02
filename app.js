@@ -15,10 +15,11 @@ app.get("/", (req, res) => {
 });
 
 let connectedPeers = [];
+let connectedPeersStrangers = [];
 
 socketio.on("connection", (socket) => {
   connectedPeers.push(socket.id);
-  console.log(connectedPeers);
+  console.log("peers", connectedPeers);
 
   socket.on("pre-offer", (data) => {
     const connectedPeer = connectedPeers.find((peerSocketId) => {
@@ -71,7 +72,8 @@ socketio.on("connection", (socket) => {
     });
 
     connectedPeers = newConnectedPeers;
-    console.log(connectedPeers);
+    removeFromStrangerPool(socket.id);
+    console.log("peers", connectedPeers);
   });
 
   socket.on("user-hanged-up", (data) => {
@@ -85,7 +87,26 @@ socketio.on("connection", (socket) => {
       socketio.to(connectedUserSocketId).emit("user-hanged-up");
     }
   });
+
+  socket.on("stranger-connection-status", (data) => {
+    const { status } = data;
+    if (status) {
+      connectedPeersStrangers.push(socket.id);
+    } else {
+      removeFromStrangerPool(socket.id);
+    }
+    console.log("strangers", connectedPeersStrangers);
+  });
 });
+
+const removeFromStrangerPool = (socketID) => {
+  const newConnectedPeersStrangers = connectedPeersStrangers.filter(
+    (peerSocketId) => peerSocketId !== socketID
+  );
+
+  connectedPeersStrangers = newConnectedPeersStrangers;
+  console.log("strangers", connectedPeersStrangers);
+};
 
 server.listen(PORT, () => {
   console.log("Listening on port", PORT);

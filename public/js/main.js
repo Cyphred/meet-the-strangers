@@ -4,6 +4,7 @@ import * as wss from "./wss.js";
 import * as webRTCHandler from "./webRTCHandler.js";
 import * as ui from "./ui.js";
 import * as recordingUtils from "./recordingUtils.js";
+import * as strangerUtils from "./strangerUtils.js";
 
 // Initializtion of socketIO connection
 const socket = io("/");
@@ -45,6 +46,15 @@ personalCodeVideoButton.addEventListener("click", () => {
     constants.callType.VIDEO_PERSONAL_CODE,
     personalCodeInput.value
   );
+});
+
+const strangerCheckBox = document.getElementById("allow_strangers_checkbox");
+
+strangerCheckBox.addEventListener("click", () => {
+  const checkboxState = store.getState().allowConnectionsFromStrangers;
+  ui.updateStrangerCheckbox(!checkboxState);
+  store.setAllowConnectionsFromStrangers(!checkboxState);
+  strangerUtils.changeStrangerConnectionStatus(!checkboxState);
 });
 
 // Event listeners for video call buttons
