@@ -180,6 +180,7 @@ const acceptCallHandler = () => {
   createPeerConnection();
   sendPreOfferAnswer(constants.preOfferAnswer.CALL_ACCEPTED);
   ui.showCallElements(connectedUserDetails.callType);
+  ui.removeAllDialogs();
 };
 
 /**
@@ -187,6 +188,7 @@ const acceptCallHandler = () => {
  */
 const rejectCallHandler = () => {
   sendPreOfferAnswer(constants.preOfferAnswer.CALL_REJECTED);
+  ui.removeAllDialogs();
   setIncomingCallsAvailable();
 };
 
@@ -205,7 +207,6 @@ const sendPreOfferAnswer = (preOfferAnswer, callerSocketId = null) => {
     preOfferAnswer,
   };
 
-  ui.removeAllDialogs();
   wss.sendPreOfferAnswer(data);
 };
 
