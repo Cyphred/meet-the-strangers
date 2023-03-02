@@ -151,6 +151,44 @@ export const clearMessenger = () => {
   messagesContainer.querySelectorAll("*").forEach((n) => n.remove);
 };
 
+// Recording
+export const showRecordingPanel = () => {
+  const recordingButtons = document.getElementById("video_recording_buttons");
+  showElement(recordingButtons);
+
+  // Hides start recording button if there is an ongoing recording
+  const startRecordingButton = document.getElementById(
+    "start_recording_button"
+  );
+  hideElement(startRecordingButton);
+};
+
+/**
+ * Hides the recording buttons and shows the start recording button.
+ */
+export const resetRecordingButtons = () => {
+  const recordingButtons = document.getElementById("video_recording_buttons");
+  hideElement(recordingButtons);
+
+  const startRecordingButton = document.getElementById(
+    "start_recording_button"
+  );
+  showElement(startRecordingButton);
+};
+
+export const switchRecordingButtons = (switchForResumeButton = false) => {
+  const resumeButton = document.getElementById("resume_recording_button");
+  const pauseButton = document.getElementById("pause_recording_button");
+
+  if (switchForResumeButton) {
+    hideElement(pauseButton);
+    showElement(resumeButton);
+  } else {
+    hideElement(resumeButton);
+    showElement(pauseButton);
+  }
+};
+
 // UI helper functions
 
 const enableDashboard = () => {
