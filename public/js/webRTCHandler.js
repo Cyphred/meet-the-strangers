@@ -27,6 +27,9 @@ export const getLocalPreview = () => {
       // Update UI to show local stream
       ui.updateLocalVideo(stream);
 
+      // Shows video call buttons once local stream is available
+      ui.showVideoCallButtons();
+
       // Save local stream to state
       store.setLocalStream(stream);
     })
