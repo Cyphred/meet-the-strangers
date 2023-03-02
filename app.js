@@ -73,6 +73,18 @@ socketio.on("connection", (socket) => {
     connectedPeers = newConnectedPeers;
     console.log(connectedPeers);
   });
+
+  socket.on("user-hanged-up", (data) => {
+    const { connectedUserSocketId } = data;
+
+    const connectedPeer = connectedPeers.find(
+      (peerSocketId) => peerSocketId === connectedUserSocketId
+    );
+
+    if (connectedPeer) {
+      socketio.to(connectedUserSocketId).emit("user-hanged-up");
+    }
+  });
 });
 
 server.listen(PORT, () => {

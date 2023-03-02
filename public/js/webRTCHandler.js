@@ -316,3 +316,15 @@ export const toggleScreenSharing = async (enabled) => {
     }
   }
 };
+
+// Hang up
+
+export const handleHangUp = () => {
+  const data = {
+    connectedUserSocketId: connectedUserDetails.socketId,
+  };
+
+  wss.sendUserHangedUp(data);
+};
+
+export const handleConnectedUserHangedUp = () => {};
